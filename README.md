@@ -18,11 +18,9 @@ Environment names supported are all multipython tags, including free threading P
 > [!IMPORTANT]
 > This plugin does not fall back to tox python: interpreter discovery errors are explicit.
 
-# Testing
+# Testing, tox 3
 
-Read table below as
-
-> When `tox-multipython` is installed inside `Host tag` environment, it allows to use selected ✅ *Target tag* as `env_list` in `tox.ini` and automatically discovers corresponding [multipython](https://hub.docker.com/r/makukha/multipython) executable. For rejected 🚫 *Target tag*, `tox` environment provision fails.
+When `tox-multipython` is installed inside *Host tag* environment, it allows to use selected ✅ *Target tag* as `env_list` in `tox.ini` and automatically discovers corresponding [multipython](https://hub.docker.com/r/makukha/multipython) executable. For rejected 🚫 *Target tag*, python executable is discovered, but `tox` environment provision fails.
 
 *Host tag* and *Target tags* are valid [multipython](https://hub.docker.com/r/makukha/multipython) tags.
 
@@ -54,7 +52,7 @@ Read table below as
 <tr><th><code>py314t</code></th> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>🚫</td> <td>🚫</td> <td>🚫</td> <td>🚫</td></tr>
 <tr><th><code>py313t</code></th> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>🚫</td> <td>🚫</td> <td>🚫</td> <td>🚫</td></tr>
 <tr><th><code>py314</code></th> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>🚫</td> <td>🚫</td> <td>🚫</td> <td>🚫</td></tr>
-<tr><th><code>py313</code></th> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>🚫</td> <td>🚫</td> <td>🚫</td> <td>🚫</td></tr>
+<tr><th><code>py313</code></th> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td></tr>
 <tr><th><code>py312</code></th> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>🚫</td> <td>🚫</td> <td>🚫</td> <td>🚫</td></tr>
 <tr><th><code>py311</code></th> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>🚫</td> <td>🚫</td> <td>🚫</td> <td>🚫</td></tr>
 <tr><th><code>py310</code></th> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>🚫</td> <td>🚫</td> <td>🚫</td> <td>🚫</td></tr>
