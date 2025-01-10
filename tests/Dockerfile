@@ -1,4 +1,5 @@
 FROM makukha/multipython:unsafe
+SHELL ["/bin/bash", "-o", "errexit", "-o", "errtrace", "-o", "nounset", "-o", "pipefail", "-c"]
 
 RUN <<EOT
     # remove version pre-installed with multipython
@@ -7,14 +8,14 @@ EOT
 
 COPY dist /test/dist
 COPY tests/tox.*.ini /test/tests/
-WORKDIR /test
+WORKDIR /test/tests
 
 ARG TOX_TAG
 RUN <<EOT
     set -eEux -o pipefail
     # install tox and current plugin version
     $(py bin --path "$TOX_TAG") -m pip install "tox>=3,<4" wheel
-    $(py bin --path "$TOX_TAG") -m pip install dist/*.whl
+    $(py bin --path "$TOX_TAG") -m pip install ../dist/*.whl
 EOT
 
 ARG CASE_NAME
@@ -31,7 +32,6 @@ RUN <<EOT
     # make sure all tags mentioned
     (sed 's/ $//; s/ /\n/g' <<<"$TAGS_PASSING $TAGS_INVALID" | sort) | diff -s - <(py ls --tag | sort)
 
-    cd tests
     # this is needed to not interfere with virtualenv-multipython
     export VIRTUALENV_DISCOVERY=
 
