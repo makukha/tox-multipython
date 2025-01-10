@@ -5,7 +5,6 @@ build-backend = "hatchling.build"
 [project]
 name = "tox-multipython"
 description = "tox 3 interpreter discovery plugin for multipython"
-version = "0.1.0"
 license = {text = "MIT"}
 authors = [
   {name = "Michael Makukha", email = "m.makukha@gmail.com"},

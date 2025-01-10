@@ -64,7 +64,6 @@ tasks:
   # > task release:version -- [patch|minor|major]
   # > task release:changelog
   # > (proofread changelog)
-  # > task docs
   #
   # > task build
   # > task release:publish
