@@ -3,9 +3,13 @@ import sys
 from subprocess import check_output
 
 try:
-    from typing import TYPE_CHECKING, Union
+    from typing import TYPE_CHECKING
 except ImportError:
     TYPE_CHECKING = False
+
+if TYPE_CHECKING:
+    # ruff: noqa: F401 = Union is actually used for typing below
+    from typing import Union
 
 import pluggy
 

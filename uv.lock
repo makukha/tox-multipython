@@ -21,6 +21,15 @@ wheels = [
 ]
 
 [[package]]
+name = "attrs"
+version = "24.3.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/48/c8/6260f8ccc11f0917360fc0da435c5c9c7504e3db174d5a12a1494887b045/attrs-24.3.0.tar.gz", hash = "sha256:8f5c07333d543103541ba7be0e2ce16eeee8130cb0b3f9238ab904ce1e85baff", size = 805984 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/89/aa/ab0f7891a01eeb2d2e338ae8fecbe57fcebea1a24dbb64d45801bfab481d/attrs-24.3.0-py3-none-any.whl", hash = "sha256:ac96cd038792094f438ad1f6ff80837353805ac950cd2aa0e0625ef19850c308", size = 63397 },
+]
+
+[[package]]
 name = "bracex"
 version = "2.5.post1"
 source = { registry = "https://pypi.org/simple" }
@@ -97,12 +106,36 @@ wheels = [
 ]
 
 [[package]]
+name = "cyclopts"
+version = "3.1.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "attrs", marker = "python_full_version >= '3.13'" },
+    { name = "docstring-parser", marker = "python_full_version >= '3.13' and python_full_version < '4.0'" },
+    { name = "rich", marker = "python_full_version >= '3.13'" },
+    { name = "rich-rst", marker = "python_full_version >= '3.13'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3a/bd/dfb30190921dfed99b97ec4b94f0896a477cfbe9beb6997b304bf6424603/cyclopts-3.1.5.tar.gz", hash = "sha256:a17200237c8e8b0a827ac81295ae79ee349edb6fb0b9629dc43160c4f541854e", size = 60437 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f2/40/594c8facedbb459cb2362e03b18e30490f7017afed592edd56391638060f/cyclopts-3.1.5-py3-none-any.whl", hash = "sha256:4bc1bdf2c7b04fb19bffea163634f3a02cba9becb883be88e073bec0c4d1b0bc", size = 69495 },
+]
+
+[[package]]
 name = "distlib"
 version = "0.3.9"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/0d/dd/1bec4c5ddb504ca60fc29472f3d27e8d4da1257a854e1d96742f15c1d02d/distlib-0.3.9.tar.gz", hash = "sha256:a60f20dea646b8a33f3e7772f74dc0b2d0772d2837ee1342a00645c81edf9403", size = 613923 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/91/a1/cf2472db20f7ce4a6be1253a81cfdf85ad9c7885ffbed7047fb72c24cf87/distlib-0.3.9-py2.py3-none-any.whl", hash = "sha256:47f8c22fd27c27e25a65601af709b38e4f0a45ea4fc2e710f65755fa8caaaf87", size = 468973 },
+]
+
+[[package]]
+name = "docstring-parser"
+version = "0.16"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/08/12/9c22a58c0b1e29271051222d8906257616da84135af9ed167c9e28f85cb3/docstring_parser-0.16.tar.gz", hash = "sha256:538beabd0af1e2db0146b6bd3caa526c35a34d61af9fd2887f3a8a27a739aa6e", size = 26565 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d5/7c/e9fcff7623954d86bdc17782036cbf715ecab1bec4847c008557affe1ca8/docstring_parser-0.16-py3-none-any.whl", hash = "sha256:bf0a1387354d3691d102edef7ec124f219ef639982d096e26e3b60aeffa90637", size = 36533 },
 ]
 
 [[package]]
@@ -117,6 +150,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/ab/e9/63b25561faf1f4feab96f044c516ba0084fbc6c0ad216b2fad907355e2d9/docsub-0.5.0.tar.gz", hash = "sha256:7e6cec7e7e4eb37fd58a76f5a8cb7ae5c27d0d3acf8f9dde5c8178519fc8537b", size = 53444 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a5/df/bd20617b679f54a561136d8bf9db2e8081a2d4fd89860b2b8fc91e7fb06b/docsub-0.5.0-py3-none-any.whl", hash = "sha256:1d972f4f53653281db67e48c946ec8e258665985b6af43c32717788cc955074f", size = 15813 },
+]
+
+[[package]]
+name = "docutils"
+version = "0.21.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/ae/ed/aefcc8cd0ba62a0560c3c18c33925362d46c6075480bfa4df87b28e169a9/docutils-0.21.2.tar.gz", hash = "sha256:3a6b18732edf182daa3cd12775bbb338cf5691468f91eeeb109deff6ebfa986f", size = 2204444 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8f/d7/9322c609343d929e75e7e5e6255e614fcc67572cfd083959cdef3b7aad79/docutils-0.21.2-py3-none-any.whl", hash = "sha256:dafca5b9e384f0e419294eb4d2ff9fa826435bf15f15b7bd45723e8ad76811b2", size = 587408 },
 ]
 
 [[package]]
@@ -870,6 +912,19 @@ wheels = [
 ]
 
 [[package]]
+name = "rich-rst"
+version = "1.3.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "docutils", marker = "python_full_version >= '3.13'" },
+    { name = "rich", marker = "python_full_version >= '3.13'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b0/69/5514c3a87b5f10f09a34bb011bc0927bc12c596c8dae5915604e71abc386/rich_rst-1.3.1.tar.gz", hash = "sha256:fad46e3ba42785ea8c1785e2ceaa56e0ffa32dbe5410dec432f37e4107c4f383", size = 13839 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fd/bc/cc4e3dbc5e7992398dcb7a8eda0cbcf4fb792a0cdb93f857b478bf3cf884/rich_rst-1.3.1-py3-none-any.whl", hash = "sha256:498a74e3896507ab04492d326e794c3ef76e7cda078703aa592d1853d91098c1", size = 11621 },
+]
+
+[[package]]
 name = "ruff"
 version = "0.9.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1065,6 +1120,7 @@ dependencies = [
 dev = [
     { name = "bump-my-version", marker = "python_full_version >= '3.13'" },
     { name = "caseutil", marker = "python_full_version >= '3.13'" },
+    { name = "cyclopts", marker = "python_full_version >= '3.13'" },
     { name = "docsub", marker = "python_full_version >= '3.13'" },
     { name = "mypy", marker = "python_full_version >= '3.13'" },
     { name = "ruff", marker = "python_full_version >= '3.13'" },
@@ -1078,6 +1134,7 @@ requires-dist = [{ name = "tox", specifier = ">=2,<4" }]
 dev = [
     { name = "bump-my-version", marker = "python_full_version >= '3.13'" },
     { name = "caseutil", marker = "python_full_version >= '3.13'" },
+    { name = "cyclopts", marker = "python_full_version >= '3.13'" },
     { name = "docsub", marker = "python_full_version >= '3.13'" },
     { name = "mypy", marker = "python_full_version >= '3.13'" },
     { name = "ruff", marker = "python_full_version >= '3.13'" },
