@@ -60,6 +60,7 @@ dependencies = [
 dev = [
   "bump-my-version; python_version>='3.13'",
   "caseutil; python_version>='3.13'",
+  "cyclopts; python_version>='3.13'",
   "docsub; python_version>='3.13'",
   "mypy; python_version>='3.13'",
   "ruff; python_version>='3.13'",

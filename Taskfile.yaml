@@ -40,6 +40,7 @@ tasks:
   docs:
     desc: Update docs.
     cmds:
+      - uv run python docsubfile.py gen-reports
       - uv run docsub -i README.md
 
   build:
@@ -53,6 +54,7 @@ tasks:
     desc: Prune build cache.
     cmds:
       - docker builder prune
+      - docker image prune
 
   #
   #  RELEASE

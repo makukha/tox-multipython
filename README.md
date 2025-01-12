@@ -18,53 +18,115 @@ Environment names supported are all multipython tags, including free threading P
 > [!IMPORTANT]
 > This plugin does not fall back to tox python: interpreter discovery errors are explicit.
 
-# Testing, tox 3
+# Testing
+
+There is one type of tests performed:
+1. ***Tox 3.*** `tox` and `virtualenv` are installed in *host tag* environment, and `tox run` is executed on `tox.ini` with env names equal to *target tags*. Tox environment's python version must match tox env name and *target tag*. In these tests we test all [multipython](https://github.com/makukha/multipython) tags as both *host tags* and *target tags*.
+
+Virtualenv supports discovery plugins since v20. In v20.22, it dropped support for Python <=3.6, in v20.27 it dropped support for Python 3.7.
+
+This is why we use 3 different test setups:
+
+1. ***Tox 3***, `tox>=3,<4`, `virtualenv>=20`
+1. ***Tox 3***, `tox>=3,<4`, `virtualenv>=20,<20.27`
+1. ***Tox 3***, `tox>=3,<4`, `virtualenv>=20,<20.22`
+
+## Test report
 
 When `tox-multipython` is installed inside *Host tag* environment, it allows to use selected ✅ *Target tag* as `env_list` in `tox.ini` and automatically discovers corresponding [multipython](https://hub.docker.com/r/makukha/multipython) executable. For rejected 🚫 *Target tag*, python executable is discovered, but `tox` environment provision fails.
 
 *Host tag* and *Target tags* are valid [multipython](https://hub.docker.com/r/makukha/multipython) tags.
 
+> [!NOTE]
+> The fully green line for `py313` is a multipython design flaw that should be fixed soon: https://github.com/makukha/multipython/issues/76
+
 <table>
-<thead>
-<tr>
-    <th rowspan="2">Host tag</th>
-    <th colspan="13">Target tag</th>
-</tr>
-<tr>
-    <th><code>py</code><br/><code>314t</code></th>
-    <th><code>py</code><br/><code>313t</code></th>
-    <th><code>py</code><br/><code>314</code></th>
-    <th><code>py</code><br/><code>313</code></th>
-    <th><code>py</code><br/><code>312</code></th>
-    <th><code>py</code><br/><code>311</code></th>
-    <th><code>py</code><br/><code>310</code></th>
-    <th><code>py</code><br/><code>39</code></th>
-    <th><code>py</code><br/><code>38</code></th>
-    <th><code>py</code><br/><code>37</code></th>
-    <th><code>py</code><br/><code>36</code></th>
-    <th><code>py</code><br/><code>35</code></th>
-    <th><code>py</code><br/><code>27</code></th>
-</tr>
-</thead>
 <tbody>
+
+<tr>
+<td>
+<code>tox>=3,<4</code>, <code>virtualenv>=20</code>
 <!-- docsub: begin -->
-<!-- docsub: exec bash .dev/gen-tests-summary.sh -->
-<tr><th><code>py314t</code></th> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>🚫</td> <td>🚫</td> <td>🚫</td> <td>🚫</td></tr>
-<tr><th><code>py313t</code></th> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>🚫</td> <td>🚫</td> <td>🚫</td> <td>🚫</td></tr>
-<tr><th><code>py314</code></th> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>🚫</td> <td>🚫</td> <td>🚫</td> <td>🚫</td></tr>
-<tr><th><code>py313</code></th> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td></tr>
-<tr><th><code>py312</code></th> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>🚫</td> <td>🚫</td> <td>🚫</td> <td>🚫</td></tr>
-<tr><th><code>py311</code></th> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>🚫</td> <td>🚫</td> <td>🚫</td> <td>🚫</td></tr>
-<tr><th><code>py310</code></th> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>🚫</td> <td>🚫</td> <td>🚫</td> <td>🚫</td></tr>
-<tr><th><code>py39</code></th> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>🚫</td> <td>🚫</td> <td>🚫</td> <td>🚫</td></tr>
-<tr><th><code>py38</code></th> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>🚫</td> <td>🚫</td> <td>🚫</td> <td>🚫</td></tr>
-<tr><th><code>py37</code></th> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>🚫</td> <td>🚫</td> <td>🚫</td></tr>
-<tr><th><code>py36</code></th> <td>🚫</td> <td>🚫</td> <td>🚫</td> <td>🚫</td> <td>🚫</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td></tr>
-<tr><th><code>py35</code></th> <td>🚫</td> <td>🚫</td> <td>🚫</td> <td>🚫</td> <td>🚫</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td></tr>
-<tr><th><code>py27</code></th> <td>🚫</td> <td>🚫</td> <td>🚫</td> <td>🚫</td> <td>🚫</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td> <td>✅</td></tr>
+<!-- docsub: exec uv run python docsubfile.py pretty-report tox3_venv -->
+<!-- docsub: lines after 1 upto -1 -->
+<pre>
+          TARGETS
+  HOST    A B C D E F G H I J K L M
+py314t  A ✅✅✅✅✅✅✅✅✅🚫🚫🚫🚫
+py313t  B ✅✅✅✅✅✅✅✅✅🚫🚫🚫🚫
+ py314  C ✅✅✅✅✅✅✅✅✅🚫🚫🚫🚫
+ py313  D ✅✅✅✅✅✅✅✅✅✅✅✅✅
+ py312  E ✅✅✅✅✅✅✅✅✅🚫🚫🚫🚫
+ py311  F ✅✅✅✅✅✅✅✅✅🚫🚫🚫🚫
+ py310  G ✅✅✅✅✅✅✅✅✅🚫🚫🚫🚫
+  py39  H ✅✅✅✅✅✅✅✅✅🚫🚫🚫🚫
+  py38  I ✅✅✅✅✅✅✅✅✅🚫🚫🚫🚫
+  py37  J ✅✅✅✅✅✅✅✅✅✅🚫🚫🚫
+  py36  K 🚫🚫🚫🚫🚫✅✅✅✅✅✅✅✅
+  py35  L 🚫🚫🚫🚫🚫✅✅✅✅✅✅✅✅
+  py27  M 🚫🚫🚫🚫🚫✅✅✅✅✅✅✅✅
+</pre>
 <!-- docsub: end -->
+</td>
+</tr>
+
+<tr>
+<td>
+<code>tox>=3,<4</code>, <code>virtualenv>=20,<20.27</code>
+<!-- docsub: begin -->
+<!-- docsub: exec uv run python docsubfile.py pretty-report tox3_venv27 -->
+<!-- docsub: lines after 1 upto -1 -->
+<pre>
+          TARGETS
+  HOST    A B C D E F G H I J K L M
+py314t  A ✅✅✅✅✅✅✅✅✅✅🚫🚫🚫
+py313t  B ✅✅✅✅✅✅✅✅✅✅🚫🚫🚫
+ py314  C ✅✅✅✅✅✅✅✅✅✅🚫🚫🚫
+ py313  D ✅✅✅✅✅✅✅✅✅✅✅✅✅
+ py312  E ✅✅✅✅✅✅✅✅✅✅🚫🚫🚫
+ py311  F ✅✅✅✅✅✅✅✅✅✅🚫🚫🚫
+ py310  G ✅✅✅✅✅✅✅✅✅✅🚫🚫🚫
+  py39  H ✅✅✅✅✅✅✅✅✅✅🚫🚫🚫
+  py38  I ✅✅✅✅✅✅✅✅✅✅🚫🚫🚫
+  py37  J ✅✅✅✅✅✅✅✅✅✅🚫🚫🚫
+  py36  K 🚫🚫🚫🚫🚫✅✅✅✅✅✅✅✅
+  py35  L 🚫🚫🚫🚫🚫✅✅✅✅✅✅✅✅
+  py27  M 🚫🚫🚫🚫🚫✅✅✅✅✅✅✅✅
+</pre>
+<!-- docsub: end -->
+</td>
+</tr>
+
+<tr>
+<td>
+<code>tox>=3,<4</code>, <code>virtualenv>=20,<20.22</code>
+<!-- docsub: begin -->
+<!-- docsub: exec uv run python docsubfile.py pretty-report tox3_venv22 -->
+<!-- docsub: lines after 1 upto -1 -->
+<pre>
+          TARGETS
+  HOST    A B C D E F G H I J K L M
+py314t  A ✅✅✅✅✅✅✅✅✅✅✅✅✅
+py313t  B ✅✅✅✅✅✅✅✅✅✅✅✅✅
+ py314  C ✅✅✅✅✅✅✅✅✅✅✅✅✅
+ py313  D ✅✅✅✅✅✅✅✅✅✅✅✅✅
+ py312  E ✅✅✅✅✅✅✅✅✅✅✅✅✅
+ py311  F ✅✅✅✅✅✅✅✅✅✅✅✅✅
+ py310  G ✅✅✅✅✅✅✅✅✅✅✅✅✅
+  py39  H ✅✅✅✅✅✅✅✅✅✅✅✅✅
+  py38  I ✅✅✅✅✅✅✅✅✅✅✅✅✅
+  py37  J ✅✅✅✅✅✅✅✅✅✅✅✅✅
+  py36  K 🚫🚫🚫🚫🚫✅✅✅✅✅✅✅✅
+  py35  L 🚫🚫🚫🚫🚫✅✅✅✅✅✅✅✅
+  py27  M 🚫🚫🚫🚫🚫✅✅✅✅✅✅✅✅
+</pre>
+<!-- docsub: end -->
+</td>
+</tr>
+
 </tbody>
 </table>
+
 
 # Authors
 
