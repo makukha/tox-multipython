@@ -10,7 +10,7 @@ import cyclopts
 
 IMG = 'makukha/multipython:unsafe'
 BAKEFILE = 'tests/docker-bake.hcl'
-REPORTS_DIR = Path('docs/test_report')
+REPORTS_DIR = Path('docs/testreport')
 
 POS = '✅'
 NEG = '🚫'
