@@ -4,6 +4,7 @@ RUN <<EOT
     # remove version pre-installed with multipython
     python -m pip uninstall -y tox virtualenv-multipython
 EOT
+
 COPY dist /test/dist
 WORKDIR /test/tests
 
