@@ -37,6 +37,15 @@ tasks:
       - task: build
       - docker buildx bake -f tests/docker-bake.hcl --no-cache
 
+  debug:
+    desc: Run debugging test case.
+    env:
+      BUILDKIT_PROGRESS: plain
+    cmds:
+      - task: build
+      - docker buildx bake -f tests/docker-bake.hcl debug
+      - docker run --rm -it tox-multipython-debug bash test_tox3.sh
+
   docs:
     desc: Update docs.
     cmds:

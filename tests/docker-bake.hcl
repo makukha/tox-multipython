@@ -58,9 +58,14 @@ group "default" {
   targets = ["tox3"]
 }
 
-target "tox3" {
+target "__base__" {
   dockerfile = "tests/Dockerfile"
-  context = "."
+  output = ["type=cacheonly"]
+  no-cache = true
+}
+
+target "tox3" {
+  inherits = ["__base__"]
   args = {
     CASE_NAME = "${CASE["tag"]} ${CASE["venv"]}",
     PYTHON_TAG = CASE["tag"],
@@ -73,5 +78,24 @@ target "tox3" {
     CASE = CASES_TOX3
   }
   name = "test_tox3_${CASE["tag"]}_${regex_replace(CASE["venv"], "[^0-9]", "_")}"
-  output = ["type=cacheonly"]
+}
+
+
+# debug
+
+target "debug" {
+  inherits = ["__base__"]
+  output = ["type=image"]
+#   target = "debug"
+#   args = {
+#     MULTIPYTHON_DEBUG = "true",
+#     HOST_TAG = "py313",
+#     TARGET_TAGS_PASSING = "py314t py313t py314 py313 py312 py311 py310 py39 py38",
+#     TARGET_TAGS_NOINSTALL = "py37",
+#     TARGET_TAGS_NOTFOUND = "py36 py35 py27 py20",
+#     VIRTUALENV_PIN = ">=20",
+#   }
+#   tags = [
+#     "tox-multipython-debug",
+#   ]
 }
