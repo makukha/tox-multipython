@@ -15,22 +15,29 @@ if TYPE_CHECKING:
     # ruff: noqa: F401 = Union is actually used for typing below
     from typing import Union
 
+
 # debug logging
 
 DEBUG = bool(os.environ.get('MULTIPYTHON_DEBUG', False))
+
+
+def debug(msg):  # type: (str) -> None
+    print(msg, file=sys.stderr)
+
+
+def exception(msg):  # type: (str) -> None
+    print(msg, file=sys.stderr)
+
+
 if DEBUG:
     try:
         from loguru import logger
-        debug = logger.debug
-        exception = logger.exception
+
+        debug = logger.debug  # type: ignore
+        exception = logger.exception  # type: ignore
 
     except ImportError:
-
-        def debug(msg):
-            print(msg, file=sys.stderr)
-
-        def exception(msg):
-            print(msg, file=sys.stderr)
+        pass
 
 
 hookimpl = pluggy.HookimplMarker('tox')
