@@ -1,66 +1,61 @@
-FROM makukha/multipython:unsafe
+# build sample package
+
+FROM python:3.12-slim-bookworm AS build
+# hadolint ignore=DL3022
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+COPY tests/samplepkg /samplepkg
+WORKDIR /samplepkg
+RUN uv build
+
+# base
+
+FROM makukha/multipython:unsafe AS base
 SHELL ["/bin/bash", "-o", "errexit", "-o", "errtrace", "-o", "nounset", "-o", "pipefail", "-c"]
-RUN <<EOT
-    # remove version pre-installed with multipython
-    python -m pip uninstall -y tox virtualenv-multipython
-EOT
-
-COPY dist /test/dist
-WORKDIR /test/tests
-
-ARG PYTHON_TAG
+COPY dist /proj/dist
+COPY tests/test_*.sh tests/tox.*.ini /proj/tests/
+COPY --from=build /samplepkg/dist /samplepkg/dist
+WORKDIR /proj/tests
+# args
+ARG HOST_TAG
+ARG TARGET_TAGS_PASSING
+ARG TARGET_TAGS_NOINSTALL
+ARG TARGET_TAGS_NOTFOUND
 ARG VIRTUALENV_PIN
+# envs
+ENV HOST_TAG="${HOST_TAG}"
+ENV TARGET_TAGS_PASSING="${TARGET_TAGS_PASSING}"
+ENV TARGET_TAGS_NOINSTALL="${TARGET_TAGS_NOINSTALL}"
+ENV TARGET_TAGS_NOTFOUND="${TARGET_TAGS_NOTFOUND}"
+ENV ALL_TAGS="${TARGET_TAGS_PASSING} ${TARGET_TAGS_NOINSTALL} ${TARGET_TAGS_NOTFOUND}"
+ENV VIRTUALENV_PIN="${VIRTUALENV_PIN}"
+# validate tags
 RUN <<EOT
-    set -eEux -o pipefail
-    PYTHON="$(py bin --path "${PYTHON_TAG}")"
-    # install tox and current plugin version
-    $PYTHON -m pip install "tox>=3,<4" wheel
-    $PYTHON -m pip install ../dist/*.whl
+    IMAGE_TAGS="$(py ls --tag | sort | xargs)"
+    # shellcheck disable=SC2001
+    [ "py20 $IMAGE_TAGS" = "$(sed 's/  */\n/g' <<<"$ALL_TAGS" | sort | xargs)" ]
+EOT
+# disable virualenv plugin
+RUN rm /root/.config/virtualenv/virtualenv.ini
+
+# test targets
+
+FROM base AS tox3
+RUN <<EOT
+    PIP="$(py bin --path "$HOST_TAG") -m pip"
+    $PIP install --ignore-installed \
+      "tox>=3,<4" \
+      "virtualenv$VIRTUALENV_PIN" \
+      "tox-multipython @ file://$(find /proj/dist -name '*.whl')"
+    bash test_tox3.sh
 EOT
 
-COPY tests/tox.*.ini /test/tests/
-ARG CASE_NAME
-ARG TAGS_PASSING
-ARG TAGS_FAILING
-ARG TAGS_NOTFOUND
+FROM base AS debug
+ENV MULTIPYTHON_DEBUG=true
 RUN <<EOT
-    set -eEux -o pipefail
-    PYTHON="$(py bin --path "${PYTHON_TAG}")"
-    echo_success () {
-      echo "TEST CASE PASSED: ${CASE_NAME}" >&2
-    }
-    # verify tag coverage
-    # shellcheck disable=SC2001
-    INPUT_TAGS="$(sed 's/  */\n/g' <<<"$TAGS_PASSING $TAGS_FAILING $TAGS_NOTFOUND" | sort | xargs)"
-    IMAGE_TAGS="$(py ls --tag | sort | xargs)"
-    [ "$INPUT_TAGS" = "py20 $IMAGE_TAGS" ]
-
-    # add tox
-    $PYTHON -m pip install "tox>=3,<4" "virtualenv$VIRTUALENV_PIN" wheel
-    TOX="$PYTHON -m tox -v"
-
-    # run tests
-
-    # this is needed to not interfere with virtualenv-multipython
-    export VIRTUALENV_DISCOVERY=
-
-    # passing
-    sed 's/{env:ENVS}/'"${TAGS_PASSING// /,}"'/' tox.passing.ini > tox.ini
-    $TOX run
-
-    # invalid
-    if [ -n "$TAGS_FAILING" ]; then
-        sed 's/{env:ENVS}/'"${TAGS_FAILING// /,}"'/' tox.failing.ini > tox.ini
-        for TAG in $TAGS_FAILING; do
-          [[ "$($TOX run -e $TAG)" == *" invocation failed "* ]]
-        done
-    fi
-
-    # not found
-    sed 's/{env:ENVS}/'"${TAGS_NOTFOUND// /,}"'/' tox.failing.ini > tox.ini
-    for TAG in $TAGS_NOTFOUND; do
-      [[ "$($TOX run -e $TAG)" == *" InterpreterNotFound:"* ]]
-    done
-
-    echo_success
+    PIP="$(py bin --path "$HOST_TAG") -m pip"
+    $PIP install --ignore-installed \
+      "tox>=3,<4" \
+      "virtualenv$VIRTUALENV_PIN" \
+      "tox-multipython[debug] @ file://$(find /proj/dist -name '*.whl')"
+    # don't run tests at build time
 EOT
