@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os
 import re
 import sys
@@ -14,19 +15,29 @@ if TYPE_CHECKING:
     # ruff: noqa: F401 = Union is actually used for typing below
     from typing import Union
 
+
 # debug logging
 
 DEBUG = bool(os.environ.get('MULTIPYTHON_DEBUG', False))
-if DEBUG:
-    try:
-        from loguru import logger
-    except ImportError:
-        pass
 
 
 def debug(msg):  # type: (str) -> None
-    if DEBUG:
-        logger.debug(msg)
+    print(msg, file=sys.stderr)
+
+
+def exception(msg):  # type: (str) -> None
+    print(msg, file=sys.stderr)
+
+
+if DEBUG:
+    try:
+        from loguru import logger
+
+        debug = logger.debug  # type: ignore
+        exception = logger.exception  # type: ignore
+
+    except ImportError:
+        pass
 
 
 hookimpl = pluggy.HookimplMarker('tox')
@@ -40,16 +51,19 @@ RX = (
 @hookimpl
 def tox_get_python_executable(envconfig):  # type: ignore
     """Return a python executable for the given python base name."""
-    debug('Requested Python executable: {data}'.format(data=envconfig.__dict__))
+    if DEBUG:
+        debug('Requested Python executable: {}'.format(envconfig.__dict__))
     path = None
     for rx in RX:
         match = rx.match(envconfig.envname)
         if match is not None:
-            debug('Candidate tag: {tag}'.format(tag=envconfig.envname))
+            if DEBUG:
+                debug('Candidate tag: {}'.format(envconfig.envname))
             path = get_python_path(envconfig.envname)
             break
     if path:
-        debug('Found Python executable: {path}'.format(path=path))
+        if DEBUG:
+            debug('Found Python executable: {}'.format(path))
         return path
     else:
         debug('Failed to propose Python executable')
@@ -67,5 +81,6 @@ def get_python_path(tag):  # type: (str) -> Union[str, None]
         if not path:
             return None
     except Exception:
+        exception('Failed to call "py bin --path {}"'.format(tag))
         return None
     return path
