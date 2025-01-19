@@ -35,7 +35,7 @@ tasks:
       BUILDKIT_PROGRESS: plain
     cmds:
       - task: build
-      - docker buildx bake -f tests/docker-bake.hcl --no-cache
+      - docker buildx bake -f tests/docker-bake.hcl test
 
   debug:
     desc: Run debugging test case.
@@ -49,8 +49,8 @@ tasks:
   docs:
     desc: Update docs.
     cmds:
-      - uv run python docsubfile.py gen-reports
-      - uv run docsub -i README.md
+      - uv run docsub x generate
+      - uv run docsub apply -i README.md
 
   build:
     desc: Build package.
