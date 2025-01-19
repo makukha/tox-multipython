@@ -93,6 +93,7 @@ tasks:
       VERSION: {sh: uv run bump-my-version show current_version 2>/dev/null}
     cmds:
       - uv run towncrier build --yes --version "{{.VERSION}}"
+      - sed -e's/^### \(.*\)$/***\1***/; s/\([a-z]\)\*\*\*$/\1:***/' -i '' CHANGELOG.md
 
   release:publish:
     desc: Publish package on PyPI.
