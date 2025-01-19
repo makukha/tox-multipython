@@ -20,12 +20,16 @@ Environment names supported are all multipython tags, including free threading P
 
 # Testing
 
-There is one type of tests performed:
-1. ***Tox 3.*** `tox` and `virtualenv` are installed in *host tag* environment, and `tox run` is executed on `tox.ini` with env names equal to *target tags*. Tox environment's python version must match tox env name and *target tag*. In these tests we test all [multipython](https://github.com/makukha/multipython) tags as both *host tags* and *target tags*.
+There is one test suite:
+1. ***Tox 3.*** `tox>=3,<4` is installed in *host tag* environment, and `tox run` is executed on `tox.ini` with env names equal to *target tags*. Tox environment's python version must match tox env name and *target tag*. This test includes subtests:
+    - assert `{envpython}` version when tox env is activated
+    - assert `python` version when tox env is activated
+    - install externally built *sample package* in tox environment
+    - execute entrypoint script of externally built sample package
 
 Virtualenv supports discovery plugins since v20. In v20.22, it dropped support for Python <=3.6, in v20.27 it dropped support for Python 3.7.
 
-This is why we use 3 different test setups:
+This is why we use 6 different test setups:
 
 1. ***Tox 3***, `tox>=3,<4`, `virtualenv>=20`
 1. ***Tox 3***, `tox>=3,<4`, `virtualenv>=20,<20.27`
@@ -33,12 +37,9 @@ This is why we use 3 different test setups:
 
 ## Test report
 
-When `tox-multipython` is installed inside *Host tag* environment, it allows to use selected ✅ *Target tag* as `env_list` in `tox.ini` and automatically discovers corresponding [multipython](https://hub.docker.com/r/makukha/multipython) executable. For rejected 🚫 *Target tag*, python executable is discovered, but `tox` environment provision fails.
+When `tox-multipython` is installed inside *host tag* environment, it allows to use selected ✅ *target tag* (create virtualenv environment or use as tox env name in `env_list`) and automatically discovers corresponding [multipython](https://github.com/makukha/multipython) executable. For failing 💥 *target tag*, interpreter is discoverable, but virtual environment with *sample package* cannot be created.
 
-*Host tag* and *Target tags* are valid [multipython](https://hub.docker.com/r/makukha/multipython) tags.
-
-> [!NOTE]
-> The fully green line for `py313` is a multipython design flaw that should be fixed soon: https://github.com/makukha/multipython/issues/76
+*Host tag* and *Target tags* are valid [multipython](https://hub.docker.com/r/makukha/multipython) tags. *Host tags* are listed vertically (rows), *target tags* are listed horizontally (columns).
 
 <table>
 <tbody>
@@ -47,24 +48,24 @@ When `tox-multipython` is installed inside *Host tag* environment, it allows to 
 <td>
 <code>tox>=3,<4</code>, <code>virtualenv>=20</code>
 <!-- docsub: begin -->
-<!-- docsub: exec uv run python docsubfile.py pretty-report tox3_venv -->
+<!-- docsub: x pretty tox3_v -->
 <!-- docsub: lines after 1 upto -1 -->
 <pre>
-          TARGETS
-  HOST    A B C D E F G H I J K L M
-py314t  A ✅✅✅✅✅✅✅✅✅🚫🚫🚫🚫
-py313t  B ✅✅✅✅✅✅✅✅✅🚫🚫🚫🚫
- py314  C ✅✅✅✅✅✅✅✅✅🚫🚫🚫🚫
- py313  D ✅✅✅✅✅✅✅✅✅✅✅✅✅
- py312  E ✅✅✅✅✅✅✅✅✅🚫🚫🚫🚫
- py311  F ✅✅✅✅✅✅✅✅✅🚫🚫🚫🚫
- py310  G ✅✅✅✅✅✅✅✅✅🚫🚫🚫🚫
-  py39  H ✅✅✅✅✅✅✅✅✅🚫🚫🚫🚫
-  py38  I ✅✅✅✅✅✅✅✅✅🚫🚫🚫🚫
-  py37  J ✅✅✅✅✅✅✅✅✅✅🚫🚫🚫
-  py36  K 🚫🚫🚫🚫🚫✅✅✅✅✅✅✅✅
-  py35  L 🚫🚫🚫🚫🚫✅✅✅✅✅✅✅✅
-  py27  M 🚫🚫🚫🚫🚫✅✅✅✅✅✅✅✅
+  HOST    TARGETS
+——————    A B C D E F G H I J K L M
+py314t  A ✅✅✅✅✅✅✅✅✅💥💥💥💥
+py313t  B ✅✅✅✅✅✅✅✅✅💥💥💥💥
+ py314  C ✅✅✅✅✅✅✅✅✅💥💥💥💥
+ py313  D ✅✅✅✅✅✅✅✅✅💥💥💥💥
+ py312  E ✅✅✅✅✅✅✅✅✅💥💥💥💥
+ py311  F ✅✅✅✅✅✅✅✅✅💥💥💥💥
+ py310  G ✅✅✅✅✅✅✅✅✅💥💥💥💥
+  py39  H ✅✅✅✅✅✅✅✅✅💥💥💥💥
+  py38  I ✅✅✅✅✅✅✅✅✅💥💥💥💥
+  py37  J ✅✅✅✅✅✅✅✅✅✅💥💥💥
+  py36  K 💥💥💥💥💥✅✅✅✅✅✅✅✅
+  py35  L 💥💥💥💥💥✅✅✅✅✅✅✅✅
+  py27  M 💥💥💥💥💥✅✅✅✅✅✅✅✅
 </pre>
 <!-- docsub: end -->
 </td>
@@ -74,24 +75,24 @@ py313t  B ✅✅✅✅✅✅✅✅✅🚫🚫🚫🚫
 <td>
 <code>tox>=3,<4</code>, <code>virtualenv>=20,<20.27</code>
 <!-- docsub: begin -->
-<!-- docsub: exec uv run python docsubfile.py pretty-report tox3_venv27 -->
+<!-- docsub: x pretty tox3_v27 -->
 <!-- docsub: lines after 1 upto -1 -->
 <pre>
-          TARGETS
-  HOST    A B C D E F G H I J K L M
-py314t  A ✅✅✅✅✅✅✅✅✅✅🚫🚫🚫
-py313t  B ✅✅✅✅✅✅✅✅✅✅🚫🚫🚫
- py314  C ✅✅✅✅✅✅✅✅✅✅🚫🚫🚫
- py313  D ✅✅✅✅✅✅✅✅✅✅✅✅✅
- py312  E ✅✅✅✅✅✅✅✅✅✅🚫🚫🚫
- py311  F ✅✅✅✅✅✅✅✅✅✅🚫🚫🚫
- py310  G ✅✅✅✅✅✅✅✅✅✅🚫🚫🚫
-  py39  H ✅✅✅✅✅✅✅✅✅✅🚫🚫🚫
-  py38  I ✅✅✅✅✅✅✅✅✅✅🚫🚫🚫
-  py37  J ✅✅✅✅✅✅✅✅✅✅🚫🚫🚫
-  py36  K 🚫🚫🚫🚫🚫✅✅✅✅✅✅✅✅
-  py35  L 🚫🚫🚫🚫🚫✅✅✅✅✅✅✅✅
-  py27  M 🚫🚫🚫🚫🚫✅✅✅✅✅✅✅✅
+  HOST    TARGETS
+——————    A B C D E F G H I J K L M
+py314t  A ✅✅✅✅✅✅✅✅✅✅💥💥💥
+py313t  B ✅✅✅✅✅✅✅✅✅✅💥💥💥
+ py314  C ✅✅✅✅✅✅✅✅✅✅💥💥💥
+ py313  D ✅✅✅✅✅✅✅✅✅✅💥💥💥
+ py312  E ✅✅✅✅✅✅✅✅✅✅💥💥💥
+ py311  F ✅✅✅✅✅✅✅✅✅✅💥💥💥
+ py310  G ✅✅✅✅✅✅✅✅✅✅💥💥💥
+  py39  H ✅✅✅✅✅✅✅✅✅✅💥💥💥
+  py38  I ✅✅✅✅✅✅✅✅✅✅💥💥💥
+  py37  J ✅✅✅✅✅✅✅✅✅✅💥💥💥
+  py36  K 💥💥💥💥💥✅✅✅✅✅✅✅✅
+  py35  L 💥💥💥💥💥✅✅✅✅✅✅✅✅
+  py27  M 💥💥💥💥💥✅✅✅✅✅✅✅✅
 </pre>
 <!-- docsub: end -->
 </td>
@@ -101,11 +102,11 @@ py313t  B ✅✅✅✅✅✅✅✅✅✅🚫🚫🚫
 <td>
 <code>tox>=3,<4</code>, <code>virtualenv>=20,<20.22</code>
 <!-- docsub: begin -->
-<!-- docsub: exec uv run python docsubfile.py pretty-report tox3_venv22 -->
+<!-- docsub: x pretty tox3_v22 -->
 <!-- docsub: lines after 1 upto -1 -->
 <pre>
-          TARGETS
-  HOST    A B C D E F G H I J K L M
+  HOST    TARGETS
+——————    A B C D E F G H I J K L M
 py314t  A ✅✅✅✅✅✅✅✅✅✅✅✅✅
 py313t  B ✅✅✅✅✅✅✅✅✅✅✅✅✅
  py314  C ✅✅✅✅✅✅✅✅✅✅✅✅✅
@@ -116,9 +117,9 @@ py313t  B ✅✅✅✅✅✅✅✅✅✅✅✅✅
   py39  H ✅✅✅✅✅✅✅✅✅✅✅✅✅
   py38  I ✅✅✅✅✅✅✅✅✅✅✅✅✅
   py37  J ✅✅✅✅✅✅✅✅✅✅✅✅✅
-  py36  K 🚫🚫🚫🚫🚫✅✅✅✅✅✅✅✅
-  py35  L 🚫🚫🚫🚫🚫✅✅✅✅✅✅✅✅
-  py27  M 🚫🚫🚫🚫🚫✅✅✅✅✅✅✅✅
+  py36  K 💥💥💥💥💥✅✅✅✅✅✅✅✅
+  py35  L 💥💥💥💥💥✅✅✅✅✅✅✅✅
+  py27  M 💥💥💥💥💥✅✅✅✅✅✅✅✅
 </pre>
 <!-- docsub: end -->
 </td>

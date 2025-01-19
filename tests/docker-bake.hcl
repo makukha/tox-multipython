@@ -25,7 +25,7 @@ variable "CASES_TOX3" {
     {host="py311", pass="py314t py313t py314 py313 py312 py311 py310 py39 py38 py37 py36 py35 py27", noinstall="", notfound="", venv=">=20,<20.22"},
 
     {host="py310", pass="py314t py313t py314 py313 py312 py311 py310 py39 py38", noinstall="py37 py36 py35 py27", notfound="", venv=">=20"},
-    {host="py310", pass="py314t py313t py314 py313 py312 py311 py310 Fpy39 py38 py37", noinstall="py36 py35 py27", notfound="", venv=">=20,<20.27"},
+    {host="py310", pass="py314t py313t py314 py313 py312 py311 py310 py39 py38 py37", noinstall="py36 py35 py27", notfound="", venv=">=20,<20.27"},
     {host="py310", pass="py314t py313t py314 py313 py312 py311 py310 py39 py38 py37 py36 py35 py27", noinstall="", notfound="", venv=">=20,<20.22"},
 
     {host="py39", pass="py314t py313t py314 py313 py312 py311 py310 py39 py38", noinstall="py37 py36 py35 py27", notfound="", venv=">=20"},
