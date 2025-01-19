@@ -15,6 +15,8 @@ COPY dist /proj/dist
 COPY tests/test_*.sh tests/tox.*.ini /proj/tests/
 COPY --from=build /samplepkg/dist /samplepkg/dist
 WORKDIR /proj/tests
+# disable virualenv plugin
+RUN rm /root/.config/virtualenv/virtualenv.ini
 # args
 ARG HOST_TAG
 ARG TARGET_TAGS_PASSING
@@ -34,8 +36,6 @@ RUN <<EOT
     # shellcheck disable=SC2001
     [ "py20 $IMAGE_TAGS" = "$(sed 's/  */\n/g' <<<"$ALL_TAGS" | sort | xargs)" ]
 EOT
-# disable virualenv plugin
-RUN rm /root/.config/virtualenv/virtualenv.ini
 
 # test targets
 
