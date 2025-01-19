@@ -7,6 +7,17 @@ All notable changes to this project will be documented in this file. Changes for
 
 <!-- towncrier release notes start -->
 
+## [v0.2.1](https://github.com/makukha/tox-multipython/releases/tag/v0.2.1) — 2025-01-19
+
+### Added 🌿
+
+- Debug mode, if installed with extra `tox-multipython[debug]` and set env variable `MULTIPYTHON_DEBUG=true` ([#17](https://github.com/makukha/tox-multipython/issues/17))
+
+### Misc
+
+- Added more realistic test cases ([#18](https://github.com/makukha/tox-multipython/issues/18))
+
+
 ## [v0.2.0](https://github.com/makukha/tox-multipython/releases/tag/v0.2.0) — 2025-01-12
 
 ### Changed
