@@ -1,16 +1,18 @@
 # ruff: noqa: S603 = allow check_output with arbitrary cmdline
-
+from itertools import product
 import json
 from pathlib import Path
 from shlex import split
 from subprocess import check_output
+import tomllib
 
+import bracex
 from docsub import Environment, pass_env, click
 
 
 IMG = 'makukha/multipython:unsafe'
-BAKEFILE = 'tests/docker-bake.hcl'
-TEMP_ID = 'reports'
+CASES_TOML = Path('tests/cases.toml')
+SUITES = ('tox3',)
 
 PASSING = '✅'
 NOINSTALL = '💥'
@@ -22,57 +24,48 @@ COLSP = ' '
 def x(): ...
 
 
-SUITE = {
-    'tox3_v': ('tox3', '>=20'),
-    'tox3_v27': ('tox3', '>=20,<20.27'),
-    'tox3_v22': ('tox3', '>=20,<20.22'),
-}
-
-
 @x.command()
 @pass_env
 def generate(env: Environment) -> None:
     """
     Generate test reports.
     """
-    temp_dir = env.get_temp_dir(TEMP_ID)
+    temp_dir = env.get_temp_dir('reports')
+
     # get source data
-    bake = check_output(split(f'docker buildx bake -f {BAKEFILE} test --print'))
-    (temp_dir / 'bake.json').write_bytes(bake)
-    data = json.loads(bake)
+    with CASES_TOML.open('rb') as f:
+        data = tomllib.load(f)
+
+    # get tags
     tags = check_output(
         split(f'docker run --rm {IMG} py ls --tag'),
         text=True,
     ).splitlines()
+
     # generate reports
-    for suite in SUITE:
-        write_report(temp_dir, data, tags, suite, skip=('py20',))
+    for suite, venv in product(SUITES, ('v__', 'v27', 'v22')):
+        case = f'{suite}-{venv}'
 
+        # prepare matrix
+        cross = {tag: val[venv] for tag, val in data[suite].items()}
+        for tag, val in cross.items():
+            marks = [
+                *((t, 'P') for t in filter(None, bracex.expand(val['pass']))),
+                *((t, 'I') for t in filter(None, bracex.expand(val['noinstall']))),
+                *((t, 'F') for t in filter(None, bracex.expand(val['notfound']))),
+            ]
+            marks.sort(key=lambda tm: tags.index(tm[0]))
+            cross[tag] = ''.join(tm[1] for tm in marks)
 
-def write_report(
-    base_dir: Path,
-    data: dict,
-    tags: list[str],
-    suite: str,
-    skip: tuple[str, ...],
-) -> None:
-    def host_tag_results(args: dict) -> tuple[str, list[str]]:
-        marks = [
-            *((t, 'P') for t in args['TARGET_TAGS_PASSING'].split()),
-            *((t, 'I') for t in set(args['TARGET_TAGS_NOINSTALL'].split()) - set(skip)),
-            *((t, 'F') for t in set(args['TARGET_TAGS_NOTFOUND'].split()) - set(skip)),
-        ]
-        marks.sort(key=lambda tm: tags.index(tm[0]))
-        return (args['HOST_TAG'], ''.join(tm[1] for tm in marks))
-
-    bake_group, venv_pin = SUITE[suite]
-    targets = data['group'][bake_group]['targets']
-    args = [data['target'][t]['args'] for t in targets]
-    table = [host_tag_results(a) for a in args if a['VIRTUALENV_PIN'] == venv_pin]
-    table.sort(key=lambda row: tags.index(row[0]))
-    results = dict(target_tags=tags, host_tag_results=dict(table))
-    with (base_dir / f'{suite}.json').open('wt') as f:
-        json.dump(results, f, indent=2)
+        # write matrix
+        with (temp_dir / f'{case}.json').open('wt') as f:
+            result = dict(
+                suite=suite,
+                venv=venv,
+                targets=tags,
+                host_results=cross,
+            )
+            json.dump(result, f, indent=2)
 
 
 @x.command()
@@ -83,13 +76,13 @@ def pretty(env: Environment, suite: str) -> None:
     Print report in compact terminal-based format.
     """
     ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVW'
-    temp_dir = env.get_temp_dir(TEMP_ID)
+    temp_dir = env.get_temp_dir('reports')
 
     with (temp_dir / f'{suite}.json').open() as f:
         data = json.load(f)
     row_title = 'HOST'
     col_title = 'TARGETS'
-    tags = data['target_tags']
+    tags = data['targets']
 
     if len(tags) > len(ALPHA):
         raise RuntimeError('Too many tags')
@@ -99,7 +92,7 @@ def pretty(env: Environment, suite: str) -> None:
     print(f'{row_title: >{width}}    {col_title}')
     print(f'{"—" * width}    {COLSP.join(ALPHA[: len(tags)])}')
     for i, tag in enumerate(tags):
-        res = data['host_tag_results'].get(tag)
+        res = data['host_results'].get(tag)
         marks = (
             [{'P': PASSING, 'I': NOINSTALL, 'F': NOTFOUND}[x] for x in res]
             if res

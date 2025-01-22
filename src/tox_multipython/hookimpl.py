@@ -1,4 +1,5 @@
 from __future__ import print_function
+import logging
 import os
 import re
 import sys
@@ -19,25 +20,15 @@ if TYPE_CHECKING:
 # debug logging
 
 DEBUG = bool(os.environ.get('MULTIPYTHON_DEBUG', False))
-
-
-def debug(msg):  # type: (str) -> None
-    print(msg, file=sys.stderr)
-
-
-def exception(msg):  # type: (str) -> None
-    print(msg, file=sys.stderr)
-
-
 if DEBUG:
     try:
         from loguru import logger
-
-        debug = logger.debug  # type: ignore
-        exception = logger.exception  # type: ignore
-
     except ImportError:
-        pass
+        logging.basicConfig(level=logging.DEBUG)
+        logger = logging  # type: ignore
+
+    debug = logger.debug
+    exception = logger.exception
 
 
 hookimpl = pluggy.HookimplMarker('tox')
