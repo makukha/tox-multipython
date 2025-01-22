@@ -7,6 +7,18 @@ All notable changes to this project will be documented in this file. Changes for
 
 <!-- towncrier release notes start -->
 
+## [v0.2.2](https://github.com/makukha/tox-multipython/releases/tag/v0.2.2) — 2025-01-22
+
+***Changed:***
+
+- Use stdlib `logging` when `loguru` is not installed ([#23](https://github.com/makukha/tox-multipython/issues/23))
+
+***Misc:***
+
+- Switched tests from Docker Bake to shell scripts and [GNU parallel](https://www.gnu.org/software/parallel) ([#23](https://github.com/makukha/tox-multipython/issues/23))
+- Started using [just](https://just.systems) ([#23](https://github.com/makukha/tox-multipython/issues/23))
+
+
 ## [v0.2.1](https://github.com/makukha/tox-multipython/releases/tag/v0.2.1) — 2025-01-19
 
 ***Added 🌿***
