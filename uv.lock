@@ -1189,6 +1189,7 @@ debug = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "bracex", marker = "python_full_version >= '3.13'" },
     { name = "bump-my-version", marker = "python_full_version >= '3.13'" },
     { name = "caseutil", marker = "python_full_version >= '3.13'" },
     { name = "docsub", marker = "python_full_version >= '3.13'" },
@@ -1205,6 +1206,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "bracex", marker = "python_full_version >= '3.13'" },
     { name = "bump-my-version", marker = "python_full_version >= '3.13'" },
     { name = "caseutil", marker = "python_full_version >= '3.13'" },
     { name = "docsub", marker = "python_full_version >= '3.13'" },
